@@ -1,32 +1,29 @@
 import {
+  Body,
   Controller,
   Get,
-  Post,
-  Body,
+  Inject,
   Param,
   ParseIntPipe,
-  UsePipes,
-  ValidationPipe,
+  Post,
 } from '@nestjs/common';
 import { UserDto } from './user.dto';
-import { BaseDto } from 'src/common/base.dto';
+import { UserService } from './user.sevice';
+import { UserRepository } from './user.repository';
 
 @Controller('users')
 export class UserController {
+  constructor(
+    @Inject('USERVIE_SERVICE_VIETTU') private readonly userService: UserService
+  ) {}
+
   @Get(':id')
   getAllUsers(@Param('id', ParseIntPipe) id: number) {
     return [{ param: id }];
   }
 
-  //   @UsePipes(new ValidationPipe())
   @Post()
   createUser(@Body() user: UserDto): UserDto {
-    return UserDto.plainToInstance(user);
-
-    // return {
-    //   username: user.username,
-    //   password: user.password,
-    //   email: user.email,
-    // };
+    return this.userService.createUser(user);
   }
 }
