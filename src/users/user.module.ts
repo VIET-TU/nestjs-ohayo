@@ -3,11 +3,8 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { StoreConfig } from 'src/store/store.config';
 import { StoreModule } from 'src/store/store.module';
-
-// function createStore(config: StoreConfig): StoreService {
-//   console.log('config :>> ', config);
-//   return new StoreService();
-// }
+import { LoggerService } from 'src/logger/logger.service';
+import { SecurityService } from './security.service';
 
 @Module({
   // giao tiep giua cac module
@@ -27,16 +24,8 @@ import { StoreModule } from 'src/store/store.module';
         path: 'user',
       } as StoreConfig,
     },
-    // {
-    //   provide: 'STORE_SERIVCE',
-    //   useFactory: createStore,
-    //   inject: [
-    //     {
-    //       token: 'STORE_CONFIG',
-    //       optional: true,
-    //     },
-    //   ],
-    // },
+    LoggerService,
+    SecurityService,
   ],
 })
 export class UserModule {}

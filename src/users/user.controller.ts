@@ -9,14 +9,16 @@ import {
   Post,
   Res,
 } from '@nestjs/common';
+import { Response } from 'express';
+import { LoggerService } from 'src/logger/logger.service';
 import { UserDto } from './user.dto';
 import { UserService } from './user.service';
-import { Response } from 'express';
 
 @Controller('users')
 export class UserController {
   constructor(
-    @Inject('USERVIE_SERVICE_VIETTU') private readonly userService: UserService
+    @Inject('USERVIE_SERVICE_VIETTU') private readonly userService: UserService,
+    private readonly logger: LoggerService
   ) {}
 
   @Get(':id')
@@ -26,7 +28,14 @@ export class UserController {
 
   @Post()
   createUser(@Body() user: UserDto): UserDto {
+    this.logger.log();
+
     return this.userService.createUser(user);
+  }
+
+  @Get()
+  test1() {
+    this.logger.log();
   }
 
   // custom reponse status
