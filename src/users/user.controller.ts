@@ -2,14 +2,16 @@ import {
   Body,
   Controller,
   Get,
+  HttpStatus,
   Inject,
   Param,
   ParseIntPipe,
   Post,
+  Res,
 } from '@nestjs/common';
 import { UserDto } from './user.dto';
 import { UserService } from './user.sevice';
-import { UserRepository } from './user.repository';
+import { Response } from 'express';
 
 @Controller('users')
 export class UserController {
@@ -25,5 +27,18 @@ export class UserController {
   @Post()
   createUser(@Body() user: UserDto): UserDto {
     return this.userService.createUser(user);
+  }
+
+  // custom reponse status
+  @Get('test/:slug')
+  sayHello(
+    @Res({ passthrough: true }) res: Response,
+    @Param('slug') slug: string
+  ) {
+    res.status(HttpStatus.ACCEPTED);
+    return {
+      slug,
+      hello: 'hello world',
+    };
   }
 }
