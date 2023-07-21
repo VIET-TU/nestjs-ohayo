@@ -7,7 +7,7 @@ import { StoreService } from '../store/store.service';
 export class UserService {
   constructor(
     @Inject('STORE_CONFIG') storeConfig: StoreConfig,
-    private storeService: StoreService
+    @Inject('STORE_SERVICEuser.json') private storeService: StoreService
   ) {
     console.log('storeConfig :>> ', storeConfig);
   }

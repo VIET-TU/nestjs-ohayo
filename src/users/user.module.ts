@@ -11,12 +11,7 @@ import { StoreModule } from 'src/store/store.module';
 
 @Module({
   // giao tiep giua cac module
-  imports: [
-    StoreModule.register({
-      dir: 'store',
-      filename: 'user.json',
-    }),
-  ],
+  imports: [StoreModule.forFeature({ filename: 'user.json' })],
   controllers: [UserController],
   providers: [
     {

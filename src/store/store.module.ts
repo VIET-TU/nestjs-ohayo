@@ -1,6 +1,21 @@
 import { DynamicModule, Module } from '@nestjs/common';
+import {
+  STORE_CONFIG_TOKEN,
+  StoreConfig,
+  StoreFreatureConfig,
+  storeRootConfig,
+} from './store.config';
 import { StoreService } from './store.service';
-import { StoreConfig } from './store.config';
+
+let rootStoreConfig: StoreConfig;
+const DEFAULT_STORE_DIRNAME = 'store';
+const DEFAULT_FILE_NAME = 'data.json';
+
+@Module({
+  providers: [StoreService],
+  exports: [StoreService],
+})
+class RootStoreModule {}
 
 @Module({
   //   providers: [
@@ -16,17 +31,43 @@ import { StoreConfig } from './store.config';
   //   exports: [StoreService],
 })
 export class StoreModule {
-  static register(config: StoreConfig): DynamicModule {
+  static forRoot(storeConfig?: storeRootConfig): DynamicModule {
+    rootStoreConfig = StoreModule.createConfig(storeConfig);
+    return {
+      module: RootStoreModule,
+      providers: [
+        {
+          provide: STORE_CONFIG_TOKEN,
+          useValue: rootStoreConfig,
+        },
+      ],
+    };
+  }
+
+  static forFeature(storeConfig: StoreFreatureConfig): DynamicModule {
+    const token = 'STORE_SERVICE' + storeConfig.filename;
     return {
       module: StoreModule,
       providers: [
-        StoreService,
         {
-          provide: 'STORE_CONFIG',
-          useValue: config,
+          provide: token,
+          useFactory: () => {
+            const featureStoreConfig = StoreModule.createConfig({
+              ...rootStoreConfig,
+              ...storeConfig,
+            });
+            return new StoreService(featureStoreConfig);
+          },
         },
       ],
-      exports: [StoreService],
+      exports: [token],
     };
+  }
+  private static createConfig(config: StoreConfig): StoreConfig {
+    const defaultCofnig: StoreConfig = {
+      dirname: DEFAULT_STORE_DIRNAME,
+      filename: DEFAULT_FILE_NAME,
+    };
+    return { ...defaultCofnig, ...config };
   }
 }
