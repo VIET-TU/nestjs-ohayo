@@ -10,7 +10,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { UserDto } from './user.dto';
-import { UserService } from './user.sevice';
+import { UserService } from './user.service';
 import { Response } from 'express';
 
 @Controller('users')

@@ -1,15 +1,22 @@
 import { Module } from '@nestjs/common';
 import { UserController } from './user.controller';
-import { UserService } from './user.sevice';
+import { UserService } from './user.service';
 import { StoreConfig } from 'src/store/store.config';
-import { StoreService } from './store.service';
+import { StoreModule } from 'src/store/store.module';
 
-function createStore(config: StoreConfig): StoreService {
-  console.log('config :>> ', config);
-  return new StoreService();
-}
+// function createStore(config: StoreConfig): StoreService {
+//   console.log('config :>> ', config);
+//   return new StoreService();
+// }
 
 @Module({
+  // giao tiep giua cac module
+  imports: [
+    StoreModule.register({
+      dir: 'store',
+      filename: 'user.json',
+    }),
+  ],
   controllers: [UserController],
   providers: [
     {
@@ -25,16 +32,16 @@ function createStore(config: StoreConfig): StoreService {
         path: 'user',
       } as StoreConfig,
     },
-    {
-      provide: 'STORE_SERIVCE',
-      useFactory: createStore,
-      inject: [
-        {
-          token: 'STORE_CONFIG',
-          optional: true,
-        },
-      ],
-    },
+    // {
+    //   provide: 'STORE_SERIVCE',
+    //   useFactory: createStore,
+    //   inject: [
+    //     {
+    //       token: 'STORE_CONFIG',
+    //       optional: true,
+    //     },
+    //   ],
+    // },
   ],
 })
 export class UserModule {}
